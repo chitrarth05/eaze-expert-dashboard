@@ -85,6 +85,39 @@ export async function getTierRows() {
 
 export function clearTierCache() {
   rowCache = null;
+  tierIndex = null;
+}
+
+/**
+ * Tier indexes, memoised per cached row set. Replaces three linear scans of
+ * the whole sheet per dashboard load. Separate maps per id column so the
+ * fallback order (mobile, then expert_id, then profile/user id) is preserved
+ * exactly rather than collapsing into one map where a collision could match
+ * the wrong buddy.
+ */
+let tierIndex = null;
+
+async function indexes() {
+  const rows = await getTierRows();
+  if (tierIndex && tierIndex.rows === rows) return tierIndex;
+
+  const byMobile = new Map();
+  const byExpertId = new Map();
+  const byProfileId = new Map();
+  const byUserId = new Map();
+  const put = (map, k, row) => {
+    const key = String(k ?? '').trim();
+    if (key && !map.has(key)) map.set(key, row);
+  };
+  for (const row of rows) {
+    put(byMobile, row.mobile_10, row);
+    put(byExpertId, row.expert_id, row);
+    put(byProfileId, row.expert_profile_id, row);
+    put(byUserId, row.user_id, row);
+  }
+
+  tierIndex = { rows, byMobile, byExpertId, byProfileId, byUserId };
+  return tierIndex;
 }
 
 /**
@@ -96,17 +129,13 @@ export async function getTierById(id) {
   const want = String(id ?? '').trim();
   if (!want) return undefined;
 
-  const rows = await getTierRows();
-  return rows.find((row) => {
-    const candidates = [row.expert_id, row.expert_profile_id, row.user_id];
-    return candidates.some((c) => String(c ?? '').trim() === want);
-  });
+  const ix = await indexes();
+  return ix.byExpertId.get(want) || ix.byProfileId.get(want) || ix.byUserId.get(want);
 }
 
 export async function getTierByMobile(mobile) {
-  const rows = await getTierRows();
+  const want = String(mobile ?? '').trim();
+  if (!want) return undefined;
 
-  return rows.find(
-    (row) => String(row.mobile_10).trim() === String(mobile).trim()
-  );
+  return (await indexes()).byMobile.get(want);
 }
