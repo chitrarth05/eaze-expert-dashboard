@@ -1,0 +1,17 @@
+# No database: every number comes from the two Redash queries and is cached
+# in memory. Scaling to multiple replicas just multiplies the Redash polls —
+# swap the cache in src/redash.js for Redis before doing that.
+services:
+  app:
+    build: .
+    container_name: eaze-expert-dashboard
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s

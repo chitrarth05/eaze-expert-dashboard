@@ -1,0 +1,17 @@
+{
+  "name": "eaze-expert-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Expert-facing performance dashboard for eaze — earning tier, call response, active hours and call quality, sourced from two Redash queries",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "redash:test": "node test-redash.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "googleapis": "^174.0.1"
+  }
+}
