@@ -1,9 +1,46 @@
 import { google } from "googleapis";
 import fs from "fs";
 
-const credentials = JSON.parse(
-  fs.readFileSync("./google-credentials.json", "utf8")
-);
+/**
+ * Google service account credentials.
+ *
+ * Preferred: GOOGLE_CREDENTIALS_JSON — the whole key pasted into one env
+ * var. That keeps every setting in a single Devtron secret mounted as
+ * Environment Variables, with no volume mount anywhere. Worth doing because
+ * a volume mounted at /app REPLACES the working directory rather than
+ * merging into it, which silently deletes package.json and node_modules at
+ * runtime — a confusing crash that looks nothing like a config mistake.
+ *
+ * Falls back to reading a file so local development (and the older
+ * volume-mount setup) keeps working unchanged.
+ */
+function loadCredentials() {
+  const raw = process.env.GOOGLE_CREDENTIALS_JSON;
+
+  if (raw && raw.trim()) {
+    try {
+      return JSON.parse(raw);
+    } catch (err) {
+      throw new Error(
+        'GOOGLE_CREDENTIALS_JSON is set but is not valid JSON. Paste the entire ' +
+        'service-account key as a single line, starting with { and ending with }. ' +
+        `Parser said: ${err.message}`
+      );
+    }
+  }
+
+  const path = process.env.GOOGLE_CREDENTIALS_PATH || './google-credentials.json';
+  try {
+    return JSON.parse(fs.readFileSync(path, 'utf8'));
+  } catch (err) {
+    throw new Error(
+      `No Google credentials found. Set GOOGLE_CREDENTIALS_JSON (preferred), or ` +
+      `place the key file at ${path}. Underlying error: ${err.message}`
+    );
+  }
+}
+
+const credentials = loadCredentials();
 
 const auth = new google.auth.GoogleAuth({
   credentials,
