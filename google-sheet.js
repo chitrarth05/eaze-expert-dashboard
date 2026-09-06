@@ -71,13 +71,14 @@ const SHEET_NAME = "BQ Raw Output";
  * until this moves to Redis.
  */
 const TIERS_TTL_MS = Number(process.env.TIERS_CACHE_TTL_SECONDS || 3600) * 1000;
+let warnedMissing = false;   // log the schema warning once, not per refresh
 let rowCache = null;      // { rows, expires }
 let rowInflight = null;   // dedupes concurrent misses
 
 async function fetchTierRows() {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: `${SHEET_NAME}!A:AZ`,
+    range: `${SHEET_NAME}!A:BZ`,
   });
 
   const rows = response.data.values || [];
@@ -85,6 +86,24 @@ async function fetchTierRows() {
   if (rows.length < 2) return [];
 
   const headers = rows[0];
+
+  // If Apps Script writes a fixed column list, new fields never arrive and
+  // the dashboard degrades silently — no error, every expert just shows as
+  // Base with no tier and no progress bar. Fail loudly in the log instead.
+  const REQUIRED = [
+    'payout_bucket', 'final_prank', 'language_pool_size',
+    'tier_progress_pct', 'calls_to_volume_gate', 'connected_calls_7d',
+    'pur_prank', 'acd_prank', 'tt_prank', 'short_call_prank',
+  ];
+  const missing = REQUIRED.filter((c) => !headers.includes(c));
+  if (missing.length && !warnedMissing) {
+    warnedMissing = true;
+    console.error(
+      `[sheet] "${SHEET_NAME}" is missing expected column(s): ${missing.join(', ')}. ` +
+      'The Apps Script export needs updating — until then tiers, the journey ' +
+      'bar and "your biggest lever" will not work correctly.'
+    );
+  }
 
   return rows.slice(1).map((values) => {
     const row = {};

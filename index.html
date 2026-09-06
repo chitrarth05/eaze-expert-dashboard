@@ -41,12 +41,12 @@
   .err{margin-top:14px;font-size:13px;color:var(--bad);font-weight:600;line-height:1.45}
 
   /* ── header ── */
-  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-  .brand{display:flex;flex-direction:column;gap:6px}
-  .brand img{height:22px;width:auto}
-  .greet{font-size:12px;color:var(--mu);font-weight:500}
+  .top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:20px}
+  .brand{display:flex;flex-direction:column;align-items:flex-start;gap:7px;min-width:0}
+  .brand img{height:24px;width:auto;object-fit:contain;display:block;flex-shrink:0}
+  .greet{font-size:12.5px;color:var(--mu);font-weight:500;line-height:1.35}
   .greet b{color:#fff;font-weight:800}
-  .out{background:var(--surf2);border:0;color:var(--mu);font-size:11px;font-weight:700;padding:7px 12px;border-radius:9px;font-family:inherit}
+  .out{background:var(--surf2);border:0;color:var(--mu);font-size:11px;font-weight:700;padding:8px 12px;border-radius:9px;font-family:inherit;flex-shrink:0;white-space:nowrap}
 
   /* ── inactive banner ── */
   .offcard{background:rgba(90,182,240,.08);border:1.5px solid rgba(90,182,240,.25);border-radius:16px;padding:17px;margin-bottom:16px}
@@ -60,7 +60,6 @@
   .chip{font-size:11px;font-weight:600;background:var(--surf2);padding:6px 11px;border-radius:9px;color:rgba(255,255,255,.82);white-space:nowrap}
   .trow{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .tname{font-weight:800;font-size:32px;letter-spacing:-.03em;line-height:1}
-  .tbadge{background:var(--btn);color:var(--bt);font-weight:800;font-size:13px;padding:7px 12px;border-radius:11px;white-space:nowrap}
 
   .ladder{display:flex;gap:3px;height:34px;margin:17px 0 0}
   .seg{border-radius:7px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -79,9 +78,6 @@
   .sigchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
   .sigchip{font-size:11px;font-weight:600;color:rgba(255,255,255,.6);background:rgba(255,255,255,.05);border-radius:7px;padding:5px 9px}
 
-  .crsec{margin-bottom:9px}
-  .crsec:last-child{margin-bottom:0}
-  .crsec-h{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;color:rgba(255,255,255,.72);margin-bottom:10px}
   .nudge{margin-top:13px;font-size:12.5px;font-weight:700;color:var(--btn);line-height:1.4}
   .lock{font-size:11px;color:rgba(255,255,255,.36);margin-top:10px;font-weight:500;line-height:1.4}
 
@@ -103,14 +99,6 @@
   .hhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
   .htitle{font-size:13px;font-weight:800}
   .htotal{font-size:27px;font-weight:800;letter-spacing:-.03em;line-height:1}
-  .haudio{font-size:11px;font-weight:700;color:var(--btn);margin-top:5px;text-align:right}
-  .hbar{height:11px;border-radius:6px;background:rgba(255,255,255,.07);overflow:hidden;margin:13px 0 10px;display:flex}
-  .hbar-audio{background:linear-gradient(90deg,#FF9E44,#FF7A2E);border-radius:6px}
-  .hsplit{display:flex;gap:16px}
-  .hsplit-item{display:flex;align-items:center;gap:6px}
-  .hsq{width:8px;height:8px;border-radius:2px}
-  .hsplit-val{font-size:12.5px;font-weight:800}
-  .hsplit-ttl{font-size:11px;color:rgba(255,255,255,.42);font-weight:600}
 
   .panel{background:var(--surf);border:1.5px solid rgba(255,255,255,.1);border-radius:15px;padding:14px;margin-top:-2px;margin-bottom:9px}
   .phead{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
@@ -160,6 +148,100 @@
   .ret-v{font-size:26px;font-weight:800;letter-spacing:-.03em;line-height:1}
   .ret-x{margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07);
     font-size:12px;line-height:1.5;color:rgba(255,255,255,.62);font-weight:500}
+
+  .focus{background:var(--surf);border:1.5px solid rgba(255,255,255,.09);border-radius:16px;padding:16px}
+  .focus-top{display:flex;align-items:center;gap:10px}
+  .focus-ic{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:900;
+    background:rgba(244,183,64,.18);color:var(--warn);flex-shrink:0}
+  .focus-ic.ok{background:rgba(79,199,154,.18);color:var(--good)}
+  .focus-t{font-size:15px;font-weight:800;letter-spacing:-.02em}
+  .focus-a{margin-top:9px;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.68);font-weight:500}
+  .focus-list{margin-top:10px}
+  .frow{display:flex;align-items:center;gap:9px;padding:7px 0}
+  .fic{width:18px;height:18px;border-radius:6px;display:grid;place-items:center;font-size:10px;font-weight:900;flex-shrink:0}
+  .fic.ok{background:rgba(79,199,154,.15);color:var(--good)}
+  .fic.warn{background:rgba(244,183,64,.15);color:var(--warn)}
+  .ft{font-size:13px;font-weight:600;color:rgba(255,255,255,.62)}
+  .crsub{font-size:11px;color:rgba(255,255,255,.38);font-weight:600;margin:-4px 0 12px}
+
+  /* one-line "what to do about it" under each needs-work signal */
+  .sigadv{font-size:11px;line-height:1.4;color:rgba(255,255,255,.45);font-weight:500;
+    margin:2px 0 6px 27px}
+
+  .gate{display:flex;align-items:center;gap:9px;margin-top:12px;padding:10px 12px;
+    background:rgba(90,182,240,.07);border:1px solid rgba(90,182,240,.18);border-radius:12px}
+
+  /* Progress within the current tier band. Deliberately carries NO number and
+     no end labels — the bar is renormalised inside the band server-side, so it
+     shows movement without exposing where the next cutoff actually sits. */
+  .prog{margin-top:12px}
+  .prog-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .prog-l{font-size:10.5px;font-weight:700;color:rgba(255,255,255,.45)}
+  .prog-cap{margin-top:8px;font-size:11.5px;line-height:1.45;color:rgba(255,255,255,.55);font-weight:500}
+  .prog-track{height:8px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
+  .prog-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#FF9E44,#FF7A2E)}
+
+  .pfoc{background:linear-gradient(160deg,rgba(255,158,68,.15),rgba(255,87,34,.04));
+    border:1.5px solid rgba(255,158,68,.28);border-radius:16px;padding:16px;margin-bottom:9px}
+  .pfoc-cap{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--btn);margin-bottom:7px}
+  .pfoc-h{font-size:15px;font-weight:700;letter-spacing:-.01em;line-height:1.45}
+
+  .alsorow{display:flex;gap:11px;align-items:flex-start;padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,.05)}
+  .alsorow:last-of-type{border-bottom:0}
+  .alsodot{width:6px;height:6px;border-radius:50%;background:var(--warn);flex-shrink:0;margin-top:6px}
+  .alsottl{font-size:12.5px;font-weight:800;color:rgba(255,255,255,.9)}
+  .alsotxt{font-size:12px;line-height:1.45;font-weight:500;color:rgba(255,255,255,.55);margin-top:2px}
+
+  .basefoot{margin-top:10px}
+  .card.static{cursor:default}
+
+  /* toggle sits INSIDE the card as a contained pill — the old full-width
+     border-top made every card look like it had a detached footer strip */
+  .morewrap{display:flex;justify-content:center;margin-top:14px}
+  .more{display:inline-flex;align-items:center;gap:6px;padding:7px 15px;border:0;border-radius:999px;
+    background:rgba(255,255,255,.07);font-family:inherit;font-size:11.5px;font-weight:700;
+    color:rgba(255,255,255,.62)}
+  .more .caret{font-size:8px;opacity:.7}
+
+  /* a tinted top edge per card, so the page isn't uniformly grey */
+
+  .crmain{display:flex;align-items:center;gap:14px;margin-top:4px}
+  .crside{flex:1;display:flex;flex-direction:column;gap:9px}
+  .sidestat{border-radius:13px;padding:10px 12px;display:flex;align-items:center;
+    justify-content:space-between;gap:8px}
+  .sidestat.warn{background:rgba(244,183,64,.10);border:1px solid rgba(244,183,64,.20)}
+  .sidestat.bad {background:rgba(239,106,106,.10);border:1px solid rgba(239,106,106,.20)}
+  .sidelbl{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;
+    color:rgba(255,255,255,.6);white-space:nowrap}
+  .sideright{text-align:right;flex-shrink:0}
+  .sideval{font-size:20px;font-weight:800;letter-spacing:-.03em;line-height:1.15}
+  .sidestat .dlt{margin-top:1px}
+  .sidedot{width:7px;height:7px;border-radius:50%;flex-shrink:0;display:inline-block}
+
+  .dayhead{display:flex;align-items:center;padding:0 0 7px;font-size:9.5px;font-weight:800;
+    text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid rgba(255,255,255,.06)}
+  .dayhead .dayd,.dayrow .dayd{flex:1.2}
+  .dc{flex:1;text-align:right;font-size:12.5px;font-weight:700}
+  .dayhead .dc{font-size:9.5px;font-weight:800}
+  .dayoff{flex:3;text-align:right;font-size:11px;font-weight:600;color:rgba(255,255,255,.25)}
+  .donutwrap{display:grid;place-items:center;padding:6px 0 2px}
+
+  .daylist{margin-top:13px;padding-top:11px;border-top:1px solid rgba(255,255,255,.07)}
+  .dayrow{display:flex;align-items:center;justify-content:space-between;padding:7px 0}
+  .dayd{font-size:12px;font-weight:600;color:rgba(255,255,255,.45)}
+  .dayv{font-size:13px;font-weight:800}
+  .dayv.off{font-size:11.5px;font-weight:600;color:rgba(255,255,255,.25)}
+
+  .qrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;
+    border-bottom:1px solid rgba(255,255,255,.05)}
+  .qrow:last-of-type{border-bottom:0}
+  .qt{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;color:rgba(255,255,255,.72);min-width:0}
+  .qv{font-size:16px;font-weight:800;letter-spacing:-.02em}
+  .qdetail{margin-top:11px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
+  .qdetail .subt{font-size:11.5px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:9px}
+
+  .focus-h{font-size:13px;font-weight:800;color:rgba(255,255,255,.92);margin-bottom:4px}
 
   .legend{display:flex;align-items:center;gap:7px;font-size:10px;color:rgba(255,255,255,.3);margin-top:12px;font-weight:500}
   .legbox{width:13px;height:11px;border:1.5px dashed rgba(255,255,255,.2);border-radius:3px;flex-shrink:0}
@@ -410,6 +492,93 @@ function deltaChip(d, goodDir) {
   return `<div class="dlt ${better ? 'up' : 'down'}">${arrow} ${Math.abs(r)} pts</div>`;
 }
 
+/**
+ * Plain-language copy for every metric.
+ *
+ * The SQL titles ("DNP Rate", "Audio Contribution") are analyst language.
+ * Wellness buddies read this on a phone between calls, so each metric gets a
+ * name they'd actually use and ONE concrete action. The action matters more
+ * than the label — a metric with no stated fix is just a scoreboard.
+ */
+const METRIC_COPY = {
+  pickup_rate:        { title: 'Picking up calls',
+                        action: 'Answer more of the calls that come your way \u2014 every one you take is one you keep.' },
+  dnp_rate:           { title: 'Missed calls',
+                        action: 'Answer before the call stops ringing, or it goes to someone else.' },
+  rejection_rate:     { title: 'Declined calls',
+                        action: 'Decline fewer calls and more will start coming your way.' },
+  active_hours:       { title: 'Time online',
+                        action: 'Stay online through the busy hours so more calls reach you.' },
+  audio_active_hours: { title: 'Audio time online',
+                        action: 'Stay available for audio through the day \u2014 that\u2019s where the demand is.' },
+  talktime:           { title: 'Time on calls',
+                        action: 'Spend more total time on calls this week; it adds up fast.' },
+  avg_call_duration:  { title: 'Call length',
+                        action: 'Give each call a little more time so the conversation actually lands.' },
+  audio_contribution: { title: 'Audio calls',
+                        action: 'Take more audio calls \u2014 that\u2019s where most of the demand is.' },
+  short_calls:        { title: 'Very short calls',
+                        action: 'Be on a strong network and ready to talk the moment a call connects.' },
+  retention_3d:       { title: 'People calling back',
+                        action: 'End every call on a clear note so people come back to you.' },
+};
+
+function copyFor(sig) {
+  return METRIC_COPY[sig.metric] || { title: sig.title, action: '' };
+}
+
+/**
+ * Colour anchored to the real expert-level percentile distribution
+ * (n=7,468, Sep 2026) rather than to arbitrary round numbers:
+ *
+ *   pickup     p30 = 62.1%   p80 = 85.9%   (higher is better)
+ *   missed     p70 = 25.9%   p20 =  7.5%   (lower is better)
+ *   declined   p70 = 10.4%   p20 =  1.9%   (lower is better)
+ *
+ * redAt/greenAt encode direction, so the same lerp handles both: for the
+ * two "lower is better" metrics greenAt is simply the smaller number.
+ * Full red lands at roughly the bottom 30% of the pool and full green at
+ * the top 20%, so most buddies sit in the amber middle rather than being
+ * told they're failing.
+ */
+const SCALE = {
+  pickup:   { redAt: 62.1, greenAt: 85.9 },
+  dnp:      { redAt: 25.9, greenAt: 7.5  },
+  rejected: { redAt: 10.4, greenAt: 1.9  },
+};
+
+function lerp(a, b, t) { return Math.round(a + (b - a) * t); }
+
+function metricColor(value, key) {
+  const sc = SCALE[key];
+  if (value == null || !sc) return 'rgba(255,255,255,.6)';
+  const t = Math.max(0, Math.min(1, (value - sc.redAt) / (sc.greenAt - sc.redAt)));
+  const RED = [239, 106, 106], AMBER = [244, 183, 64], GREEN = [79, 199, 154];
+  const [from, to, u] = t < 0.5 ? [RED, AMBER, t * 2] : [AMBER, GREEN, (t - 0.5) * 2];
+  return `rgb(${lerp(from[0], to[0], u)},${lerp(from[1], to[1], u)},${lerp(from[2], to[2], u)})`;
+}
+
+/** Pickup rate as a ring. A single number reads as trivia; a ring reads as
+ *  "how much of the whole" without needing to explain the denominator. */
+function donut(value) {
+  const v = value == null ? 0 : Math.max(0, Math.min(100, value));
+  const r = 46, c = 2 * Math.PI * r, dash = (v / 100) * c;
+  const col = metricColor(value, 'pickup');
+  // dominant-baseline centres the pair optically; the old fixed y offsets
+  // left the block sitting low inside the ring.
+  return `<svg viewBox="0 0 120 120" width="128" height="128" role="img">
+    <circle cx="60" cy="60" r="${r}" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="12"/>
+    <circle cx="60" cy="60" r="${r}" fill="none" stroke="${col}" stroke-width="12"
+      stroke-dasharray="${dash.toFixed(1)} ${(c - dash).toFixed(1)}" stroke-linecap="round"
+      transform="rotate(-90 60 60)"/>
+    <text x="60" y="56" text-anchor="middle" dominant-baseline="middle" font-size="21" font-weight="800"
+      fill="#fff" font-family="Plus Jakarta Sans, sans-serif">${value == null ? '\u2013' : Math.round(v) + '%'}</text>
+    <text x="60" y="73" text-anchor="middle" dominant-baseline="middle" font-size="8.5" font-weight="700"
+      letter-spacing="0.4" fill="rgba(255,255,255,.42)"
+      font-family="Plus Jakarta Sans, sans-serif">PICKED UP</text>
+  </svg>`;
+}
+
 // ── Chart builders ────────────────────────────────────────────────────────────
 function dayBars(values, unit, dirGood, labels, target) {
   const nums = values.filter(v => v !== null && v !== undefined);
@@ -428,54 +597,8 @@ function dayBars(values, unit, dirGood, labels, target) {
   }).join('') + `</div>`;
 }
 
-function nestedHourBars(total, audio, labels) {
-  const max = Math.max(...total.filter(v => v != null), 1) * 1.2;
-  return `<div class="daybars">` + total.map((t, i) => {
-    const off = t === null || t === undefined;
-    const ht  = off ? 0 : Math.max(Math.round((t / max) * 50), 3);
-    const ha  = off ? 0 : Math.round(((audio[i] || 0) / max) * 50);
-    return `<div class="dcol">
-      <div class="dval${off ? ' off' : ''}">${off ? '–' : h1(t) + 'h'}</div>
-      <div class="dsub">${off ? '' : h1(audio[i]) + 'h'}</div>
-      <div class="dtrack">${off
-        ? '<div class="dempty"></div>'
-        : `<div class="nest" style="height:${ht}px"><div class="nest-audio" style="height:${ha}px"></div></div>`}</div>
-      <div class="ddate${off ? ' off' : ''}">${esc(labels[i] || '')}</div>
-    </div>`;
-  }).join('') + `</div>`;
-}
 
-function colorBars(values, labels, color) {
-  const nums = values.filter(v => v !== null && v !== undefined);
-  const max  = Math.max(...nums, 1) * 1.2;
-  return `<div class="daybars">` + values.map((v, i) => {
-    const off = v === null || v === undefined;
-    const hgt = off ? 0 : Math.max(Math.round((v / max) * 50), 3);
-    return `<div class="dcol">
-      <div class="dval${off ? ' off' : ''}">${off ? '–' : Math.round(v) + '%'}</div>
-      <div class="dtrack">${off
-        ? '<div class="dempty"></div>'
-        : `<div class="dfill" style="height:${hgt}px;background:${color}"></div>`}</div>
-      <div class="ddate${off ? ' off' : ''}">${esc(labels[i] || '')}</div>
-    </div>`;
-  }).join('') + `</div>`;
-}
 
-function stackedDays(daily, labels) {
-  return `<div class="daybars">` + labels.map((l, i) => {
-    const p = daily.pickup[i], r = daily.rejected[i], n = daily.dnp[i];
-    const off = p === null || p === undefined;
-    return `<div class="dcol">
-      <div class="dval${off ? ' off' : ''}">${off ? '–' : Math.round(p) + '%'}</div>
-      <div class="dtrack">${off ? '<div class="dempty"></div>' : `<div class="stack">
-        <div style="height:${(n || 0) * .5}px;background:var(--bad)"></div>
-        <div style="height:${(r || 0) * .5}px;background:var(--warn)"></div>
-        <div style="height:${p * .5}px;background:var(--good)"></div>
-      </div>`}</div>
-      <div class="ddate${off ? ' off' : ''}">${esc(l)}</div>
-    </div>`;
-  }).join('') + `</div>`;
-}
 
 // ── Render ────────────────────────────────────────────────────────────────────
 function resetText(r) {
@@ -486,6 +609,53 @@ function resetText(r) {
   const d = r.daysToReset;
   if (d == null) return 'resets weekly';
   return `resets in ${d} day${d === 1 ? '' : 's'}`;
+}
+
+/** Device-local greeting. Low stakes, so browser time is fine here — unlike
+ *  the reset countdown, which is derived server-side in IST. */
+function greeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good morning,';
+  if (h < 17) return 'Good afternoon,';
+  return 'Good evening,';
+}
+
+/**
+ * The journey bar. Replaces the old "7 more calls..." sentence.
+ *
+ * Two things make this safe to show everyone, including Base:
+ *  - The SQL renormalises progress INSIDE the current band, so the bar can't
+ *    be used to recover where the real cutoffs sit.
+ *  - Buddies below the volume gate get gate progress instead (calls/48),
+ *    because that is their binding constraint. The label switches to match,
+ *    so the bar never implies a tier they can't reach yet.
+ *
+ * Deliberately carries no number and no position in the pool. Most buddies
+ * sit in Base by design; telling someone they are "top 75%" is accurate,
+ * useless and demoralising. What moves behaviour is seeing the bar move.
+ */
+function journeyBlock(et) {
+  if (!et.signalsReliable || et.tierProgress == null) return '';
+  const p = Math.max(0, Math.min(100, et.tierProgress));
+  const gateOpen = !et.volumeGate || et.volumeGate.met;
+
+  const label = !gateOpen ? 'Getting into the running'
+              : et.nextTier ? `On your way to ${esc(et.nextTier)}`
+              : 'You\u2019re at the top tier';
+
+  // Encouraging at every level, and it never states where they stand.
+  const caption = !gateOpen ? 'Keep taking calls this week to be in the running.'
+    : !et.nextTier ? 'Keep it steady to hold your spot.'
+    : p >= 90 ? 'You\u2019re almost there \u2014 keep it steady.'
+    : p >= 60 ? 'You\u2019re getting close. Keep it up.'
+    : p >= 25 ? 'You\u2019re on your way.'
+    : 'Every good call moves this along.';
+
+  return `<div class="prog">
+    <div class="prog-h"><span class="prog-l">${label}</span></div>
+    <div class="prog-track"><div class="prog-fill" style="width:${Math.max(p, 2)}%"></div></div>
+    <div class="prog-cap">${caption}</div>
+  </div>`;
 }
 
 function render() {
@@ -506,98 +676,113 @@ function render() {
   const needsWork = allSig.filter(s => s.signal === 'needs_work');
   const onTrack   = allSig.filter(s => s.signal !== 'needs_work');
 
-  const signalBody = (heading) => allSig.length ? `
-      <div class="sigh">${heading}</div>
-      ${needsWork.map(s => `<div class="sigrow">
-          <span class="sigic" style="background:rgba(244,183,64,.18);color:var(--warn)">!</span>
-          <span class="sigt">${esc(s.title)}</span>
-          <span class="sigl">Needs work</span>
-        </div>`).join('')}
+  // Today's focus — one primary lever, then the rest as smaller cards.
+  // Flat lists of nine equal-weight problems don't tell anyone where to
+  // start; a single headline with the payoff spelled out does.
+  const primary = needsWork[0];
+  const also    = needsWork.slice(1, 3);
+
+  const focusCard = !allSig.length ? '' : `
+    <div class="sech" style="margin-top:20px"><span>Today's focus</span></div>
+    ${primary ? `
+      <div class="pfoc">
+        <div class="pfoc-cap">${esc(copyFor(primary).title).toUpperCase()}</div>
+        <div class="pfoc-h">${esc(copyFor(primary).action)}</div>
+      </div>
+    ` : `
+      <div class="pfoc">
+        <div class="pfoc-cap" style="color:var(--good)">ALL GOOD</div>
+        <div class="pfoc-h">Nothing needs fixing right now \u2014 keep this up.</div>
+      </div>
+    `}
+    ${also.length || onTrack.length ? `<div class="card static">
+      ${also.length ? `${also.map((x) => `
+        <div class="alsorow">
+          <span class="alsodot"></span>
+          <div><div class="alsottl">${esc(copyFor(x).title)}</div>
+            <div class="alsotxt">${esc(copyFor(x).action)}</div></div>
+        </div>`).join('')}` : ''}
       ${onTrack.length ? `
         <button class="sigmore" onclick="toggleSig()">
-          <span class="sigic" style="background:rgba(79,199,154,.18);color:var(--good)">✓</span>
-          <span class="sigt">${needsWork.length
-            ? `${onTrack.length} other${onTrack.length === 1 ? '' : 's'} on track`
-            : `All ${onTrack.length} on track`}</span>
-          <span class="caret">${sigOpen ? '▲' : '▼'}</span>
+          <span class="sigt">${sigOpen ? 'Hide' : 'Show'} what's going well (${onTrack.length})</span>
+          <span class="caret">${sigOpen ? '\u25B2' : '\u25BC'}</span>
         </button>
-        ${sigOpen ? `<div class="sigchips">${onTrack.map(s =>
-          `<span class="sigchip">${esc(s.title)}</span>`).join('')}</div>` : ''}
-      ` : ''}` : '';
+        ${sigOpen ? `<div class="focus-list">${onTrack.map((x) => `
+          <div class="frow"><span class="fic ok">\u2713</span><span class="ft">${esc(copyFor(x).title)}</span></div>
+        `).join('')}</div>` : ''}
+      ` : ''}
+    </div>` : ''}`;
 
-  // Inside the tier block when a tier is on show...
-  const signals = signalBody("What's shaping your tier")
-    ? `<div class="sig">${signalBody("What's shaping your tier")}</div>` : '';
-
-  // ...and as its own card, reframed, when it isn't. Same data, no mention of
-  // a tier the buddy hasn't reached — this reads as a to-do list, not a rank.
-  const workCard = signalBody('What to work on')
-    ? `<div class="work">${signalBody('What to work on')}</div>` : '';
-
+  // ── Your calls: donut left, the other two outcomes right beside it.
+  //    Only the day-by-day breakdown hides behind the toggle. ────────────
   const cr = d.callResponse;
   const responseCard = `
-    <button class="card${openPanel === 'cr' ? ' open' : ''}" onclick="toggle('cr')">
-      <div class="crhead"><span class="crtitle">Call Response</span><span class="caret">▼</span></div>
-      <div class="crstats">
-        <div class="crstat"><div class="crstat-val" style="color:var(--good)">${pct(cr.pickupPct)}</div><div class="crstat-ttl">Picked up</div>${deltaChip(cr.pickupDelta, 'higher')}</div>
-        <div class="crstat"><div class="crstat-val" style="color:var(--warn)">${pct(cr.rejectedPct)}</div><div class="crstat-ttl">Rejected</div>${deltaChip(cr.rejectedDelta, 'lower')}</div>
-        <div class="crstat"><div class="crstat-val" style="color:var(--bad)">${pct(cr.dnpPct)}</div><div class="crstat-ttl">Did not pick</div>${deltaChip(cr.dnpDelta, 'lower')}</div>
-      </div>
-      <div class="splitbar">
-        <div style="width:${cr.pickupPct || 0}%;background:var(--good)"></div>
-        <div style="width:${cr.rejectedPct || 0}%;background:var(--warn)"></div>
-        <div style="width:${cr.dnpPct || 0}%;background:var(--bad)"></div>
-      </div>
-    </button>
-    ${openPanel === 'cr' ? [
-      { t: 'Picked up',    v: cr.pickupPct,   d: cr.daily.pickup,   c: 'var(--good)' },
-      { t: 'Rejected',     v: cr.rejectedPct, d: cr.daily.rejected, c: 'var(--warn)' },
-      { t: 'Did not pick', v: cr.dnpPct,      d: cr.daily.dnp,      c: 'var(--bad)'  },
-    ].map(m => `<div class="panel">
-      <div class="crsec-h">
-        <span class="sdot" style="background:${m.c}"></span>${m.t}
-        <span class="subval" style="color:${m.c}">${pct(m.v)}</span>
-      </div>
-      ${colorBars(m.d, labels, m.c)}
-    </div>`).join('') + `<div class="legend" style="margin:-2px 2px 9px">
-      <span class="legbox"></span>Empty bars are days you weren't active</div>` : ''}`;
-
-  const hr = d.hours;
-  const hoursCard = `
-    <button class="card${openPanel === 'h' ? ' open' : ''}" onclick="toggle('h')">
-      <div class="hhead">
-        <span class="htitle">Active Hours</span>
-        <div style="display:flex;align-items:flex-end;gap:10px">
-          <div><div class="htotal">${h1(hr.total)}h</div><div class="haudio">${h1(hr.audio)}h audio</div></div>
-          <span class="caret">▼</span>
+    <div class="card static">
+      <div class="crhead"><span class="crtitle">Your calls</span></div>
+      <div class="crsub">Out of every call sent to you</div>
+      <div class="crmain">
+        <div class="donutwrap">${donut(cr.pickupPct)}</div>
+        <div class="crside">
+          <div class="sidestat warn">
+            <div class="sidelbl"><span class="sidedot" style="background:${metricColor(cr.rejectedPct, 'rejected')}"></span>Declined</div>
+            <div class="sideright">
+              <div class="sideval" style="color:${metricColor(cr.rejectedPct, 'rejected')}">${pct(cr.rejectedPct)}</div>
+              ${deltaChip(cr.rejectedDelta, 'lower')}
+            </div>
+          </div>
+          <div class="sidestat bad">
+            <div class="sidelbl"><span class="sidedot" style="background:${metricColor(cr.dnpPct, 'dnp')}"></span>Missed</div>
+            <div class="sideright">
+              <div class="sideval" style="color:${metricColor(cr.dnpPct, 'dnp')}">${pct(cr.dnpPct)}</div>
+              ${deltaChip(cr.dnpDelta, 'lower')}
+            </div>
+          </div>
         </div>
       </div>
-      <div class="hbar"><div class="hbar-audio" style="width:${hr.total ? (hr.audio / hr.total) * 100 : 0}%"></div></div>
-      <div class="hsplit">
-        <div class="hsplit-item"><span class="hsq" style="background:var(--btn)"></span>
-          <span class="hsplit-val" style="color:var(--btn)">${h1(hr.audio)}h</span><span class="hsplit-ttl">Audio</span></div>
-        <div class="hsplit-item"><span class="hsq" style="background:rgba(255,255,255,.15)"></span>
-          <span class="hsplit-val" style="color:rgba(255,255,255,.75)">${h1(hr.total)}h</span><span class="hsplit-ttl">Total</span></div>
-      </div>
-    </button>
-    ${openPanel === 'h' ? `<div class="panel">
-      <div class="phead"><span class="ptitle">Active Hours</span></div>
-      ${nestedHourBars(hr.dailyTotal, hr.dailyAudio, labels)}
-      <div class="hsplit" style="margin-top:13px">
-        <div class="hsplit-item"><span class="hsq" style="background:var(--btn)"></span><span class="hsplit-ttl">Audio</span></div>
-        <div class="hsplit-item"><span class="hsq" style="background:rgba(255,255,255,.16)"></span><span class="hsplit-ttl">Total</span></div>
-      </div>
-      <div class="legend"><span class="legbox"></span>Empty bars are days you weren't active</div>
-    </div>` : ''}`;
+      ${openPanel === 'cr' ? `<div class="daylist">
+        <div class="dayhead"><span class="dayd"></span>
+          <span class="dc" style="color:var(--good)">Picked</span>
+          <span class="dc" style="color:var(--warn)">Declined</span>
+          <span class="dc" style="color:var(--bad)">Missed</span></div>
+        ${labels.map((lb, i) => {
+          const p = cr.daily.pickup[i], r = cr.daily.rejected[i], m = cr.daily.dnp[i];
+          const off = p == null && r == null && m == null;
+          return `<div class="dayrow">
+            <span class="dayd">${esc(lb)}</span>
+            ${off ? `<span class="dayoff">no activity</span>`
+                  : `<span class="dc">${pct(p)}</span><span class="dc">${pct(r)}</span><span class="dc">${pct(m)}</span>`}
+          </div>`;
+        }).join('')}
+      </div>` : ''}
+      <div class="morewrap"><button class="more" onclick="toggle('cr')">
+        ${openPanel === 'cr' ? 'Hide daily' : 'View daily'} <span class="caret">${openPanel === 'cr' ? '\u25B2' : '\u25BC'}</span>
+      </button></div>
+    </div>`;
+
+  // ── Time online: total only. Audio split removed entirely. ─────────────
+  const hr = d.hours;
+  const hoursCard = `
+    <div class="card static">
+      <div class="hhead"><span class="htitle">Time online</span><span class="htotal">${h1(hr.total)}h</span></div>
+      ${openPanel === 'h' ? `<div class="daylist">
+        ${(hr.dailyTotal || []).map((v, i) => `<div class="dayrow">
+          <span class="dayd">${esc(labels[i] || '')}</span>
+          <span class="dayv${v == null ? ' off' : ''}">${v == null ? 'no activity' : h1(v) + 'h'}</span>
+        </div>`).join('')}
+      </div>` : ''}
+      <div class="morewrap"><button class="more" onclick="toggle('h')">
+        ${openPanel === 'h' ? 'Hide daily' : 'View daily'} <span class="caret">${openPanel === 'h' ? '\u25B2' : '\u25BC'}</span>
+      </button></div>
+    </div>`;
 
   const ret = d.retention || {};
   const retentionCard = (active && ret.pct != null) ? `
-    <div class="sech" style="margin-top:20px"><span>Repeat Callers</span></div>
+    <div class="sech" style="margin-top:20px"><span>People calling back</span></div>
     <button class="ret" onclick="toggleRet()">
       <div class="ret-h">
         <div>
-          <div class="ret-t">Repeat Callers</div>
-          <div class="ret-sub">3-day retention</div>
+          <div class="ret-t">Called you again</div>
+          <div class="ret-sub">Within 3 days of their first call</div>
         </div>
         <div class="ret-v" style="color:var(--btn)">${pct(ret.pct)}</div>
       </div>
@@ -605,22 +790,36 @@ function render() {
         That's what lifts this.</b></div>` : ''}
     </button>` : '';
 
-  const dots = ['var(--good)', 'var(--info)', 'var(--bad)'];
-  const quality = `<div class="sech" style="margin-top:20px"><span>Call Quality</span></div>
+  // ── How your calls go: three numbers, day detail behind View more ──────
+  const dots = ['var(--good)', 'var(--info)', 'var(--btn)'];
+  const QUALITY_TITLES = {
+    avg_call_duration:  'Average call length',
+    audio_contribution: 'Share of time on audio',
+    short_calls:        'Calls under 10 seconds',
+  };
+  const quality = `<div class="sech" style="margin-top:20px"><span>How your calls go</span></div>
     <div class="cqcard">
-      ${d.callQuality.subMetrics.map((sm, i) => `<div class="sub">
-        <div class="subt"><span class="sdot" style="background:${dots[i]}"></span>${esc(sm.title)}
-          <span class="subval">${sm.value == null ? '–' : esc(sm.value) + sm.unit}</span></div>
-        ${sm.delta != null ? `<div style="margin:-4px 0 8px 13px">${deltaChip(sm.delta, sm.directionGood)}</div>` : ''}
-        ${dayBars(sm.values, sm.unit, sm.directionGood, labels, undefined)}
+      ${d.callQuality.subMetrics.map((sm, i) => `<div class="qrow">
+        <span class="qt"><span class="sidedot" style="background:${dots[i]}"></span>${esc(QUALITY_TITLES[sm.key] || sm.title)}</span>
+        <span class="qv" style="color:${dots[i]}">${sm.value == null ? '\u2013' : esc(sm.value) + sm.unit}</span>
       </div>`).join('')}
-      <div class="legend"><span class="legbox"></span>Empty bars are days you weren't active</div>
+      ${openPanel === 'q' ? `<div class="qdetail">
+        ${d.callQuality.subMetrics.map((sm) => `<div class="sub">
+          <div class="subt">${esc(QUALITY_TITLES[sm.key] || sm.title)}</div>
+          ${dayBars(sm.values, sm.unit, sm.directionGood, labels, undefined)}
+        </div>`).join('')}
+        <div class="legend"><span class="legbox"></span>Empty bars are days you weren't active</div>
+      </div>` : ''}
+      <div class="morewrap"><button class="more" onclick="toggle('q')">
+        ${openPanel === 'q' ? 'Hide daily' : 'View daily'} <span class="caret">${openPanel === 'q' ? '\u25B2' : '\u25BC'}</span>
+      </button></div>
     </div>`;
+
 
   $('app').innerHTML = `
     <div class="top">
       <div class="brand"><img src="${LOGO}" alt="eaze">
-        <span class="greet">Hi&nbsp;<b>${esc(d.expert.name || 'there')}</b></span></div>
+        <span class="greet">${greeting()}&nbsp;<b>${esc(d.expert.name || 'there')}</b></span></div>
       <button class="out" onclick="logout()">Sign out</button>
     </div>
 
@@ -629,27 +828,39 @@ function render() {
       <div class="offb">We don't have any calls or online time to show for ${esc(d.window.startLabel || '')} – ${esc(d.window.endLabel || '')}. If you've been online today, it'll appear here tomorrow.</div>
     </div>` : ''}
 
+    ${!et.showTier && active && journeyBlock(et) ? `<div class="hero">
+      <div class="hh"><span class="hprog">Your journey</span>
+        <span class="chip">${esc(resetText(d.reset))}</span></div>
+      ${journeyBlock(et)}
+      ${et.nudge ? `<div class="nudge">\u2192 ${esc(et.nudge)}</div>` : ''}
+    </div>` : ''}
+
     ${et.showTier ? `<div class="hero">
       <div class="hh"><span class="hprog">Earning Tier</span>
         <span class="chip">${esc(resetText(d.reset))}</span></div>
       <div class="trow">
         <div class="tname">${esc(et.tier)}</div>
-        ${et.topPercent != null ? `<span class="tbadge">Top ${esc(et.topPercent)}%</span>` : ''}
       </div>
       ${ladder}
-      ${active ? signals : ''}
-      ${active && et.nudge ? `<div class="nudge">→ ${esc(et.nudge)}</div>` : ''}
-      <div class="lock">Your tier resets and is recalculated when the phase ends</div>
-    </div>` : (active ? workCard : '')}
+      ${journeyBlock(et)}
+      ${active && et.nudge ? `<div class="nudge">\u2192 ${esc(et.nudge)}</div>` : ''}
+    </div>` : ''}
 
     ${active ? `
-      <div class="sech"><span>Where you stand</span><span class="hint">Tap for daily view</span></div>
       <div class="fresh">
         <span class="fresh-ic">i</span>
-        <span class="fresh-t">Last 7 full days, up to <b>${esc(d.window.endLabel || '')}</b>. Today's calls and hours are still being counted — they'll show up here tomorrow.</span>
+        <span class="fresh-t">Last 7 full days, up to <b>${esc(d.window.endLabel || '')}</b>. Today's calls and hours will show up here tomorrow.</span>
       </div>
+
+      <div class="sech"><span>Your calls</span><span class="hint">Tap any card for daily view</span></div>
       ${responseCard}
+
+      ${focusCard}
+
+
+      <div class="sech" style="margin-top:20px"><span>Time online</span></div>
       ${hoursCard}
+
       ${quality}
       ${retentionCard}
       <div class="foot">Updated once a day · complete days only</div>
