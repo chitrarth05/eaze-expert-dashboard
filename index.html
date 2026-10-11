@@ -59,27 +59,47 @@
   .hprog{font-size:11.5px;color:rgba(255,255,255,.65);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
   .chip{font-size:11px;font-weight:600;background:var(--surf2);padding:6px 11px;border-radius:9px;color:rgba(255,255,255,.82);white-space:nowrap}
   .trow{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .tname{font-weight:800;font-size:32px;letter-spacing:-.03em;line-height:1}
+  .tname{font-weight:800;font-size:27px;letter-spacing:-.03em;line-height:1.1}
+  .tsub{margin-top:8px;font-size:13px;line-height:1.45;color:rgba(255,255,255,.72);font-weight:500}
 
   .ladder{display:flex;gap:3px;height:34px;margin:17px 0 0}
   .seg{border-radius:7px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;overflow:hidden}
   .seg.cur{background:linear-gradient(180deg,rgba(255,158,68,.55),rgba(255,122,46,.45));box-shadow:inset 0 0 0 1.5px rgba(255,158,68,1)}
   .seglbl{font-size:10px;font-weight:800;color:rgba(255,255,255,.45);white-space:nowrap}
   .seg.cur .seglbl{color:#fff}
+  /* where this week's numbers point, when that differs from the paid tier */
+  .seg.next{outline:1.5px dashed rgba(255,158,68,.85);outline-offset:-1.5px}
+  .seg.next .seglbl{color:rgba(255,255,255,.85)}
 
-  .sig{margin-top:18px;background:rgba(0,0,0,.22);border-radius:12px;padding:13px}
-  .sigh{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.55);font-weight:800;margin-bottom:11px}
-  .sigrow{display:flex;align-items:center;gap:9px;padding:6px 0}
-  .sigic{width:17px;height:17px;border-radius:5px;display:grid;place-items:center;flex-shrink:0;font-size:10px;font-weight:900}
-  .sigt{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.85);flex:1}
-  .sigl{font-size:11px;font-weight:700;color:var(--warn)}
-  .sigmore{display:flex;align-items:center;gap:9px;width:100%;background:none;border:0;padding:8px 0 2px;margin-top:4px;border-top:1px solid rgba(255,255,255,.07);font-family:inherit;color:inherit;text-align:left}
-  .sigmore .sigt{color:rgba(255,255,255,.5);font-weight:600}
-  .sigchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
-  .sigchip{font-size:11px;font-weight:600;color:rgba(255,255,255,.6);background:rgba(255,255,255,.05);border-radius:7px;padding:5px 9px}
+  /* "not confirmed in review" — neutral, never alarm-coloured */
+  .review{margin-top:14px;padding:11px 12px;border-radius:12px;background:rgba(90,182,240,.08);
+    border:1px solid rgba(90,182,240,.22);font-size:12px;line-height:1.5;color:rgba(255,255,255,.75);font-weight:500}
 
-  .nudge{margin-top:13px;font-size:12.5px;font-weight:700;color:var(--btn);line-height:1.4}
-  .lock{font-size:11px;color:rgba(255,255,255,.36);margin-top:10px;font-weight:500;line-height:1.4}
+  /* target checklist */
+  .tl{margin-top:16px;background:rgba(0,0,0,.22);border-radius:14px;padding:13px 13px 6px}
+  .tl-h{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:800;margin-bottom:6px}
+  .tl-ok{font-size:11px;font-weight:700;color:var(--good)}
+  .tr{display:flex;gap:10px;padding:9px 0;border-top:1px solid rgba(255,255,255,.06)}
+  .tr:first-of-type{border-top:0}
+  .tr-ic{width:18px;height:18px;border-radius:6px;display:grid;place-items:center;flex-shrink:0;
+    font-size:10px;font-weight:900;margin-top:1px}
+  .tr.ok .tr-ic{background:rgba(79,199,154,.16);color:var(--good)}
+  .tr.miss .tr-ic{border:1.5px solid rgba(244,183,64,.75)}
+  .tr.todo .tr-ic{border:1.5px solid rgba(255,255,255,.25)}
+  .tr-body{flex:1;min-width:0}
+  .tr-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .tr-l{font-size:13px;font-weight:700;color:rgba(255,255,255,.9)}
+  .tr-v{font-size:15px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
+  .tr.ok .tr-v{color:var(--good)}
+  .tr.miss .tr-v{color:var(--warn)}
+  .tr-t{margin-top:3px;font-size:11.5px;line-height:1.4;color:rgba(255,255,255,.5);font-weight:600}
+  .tr-gap{color:var(--warn)}
+  .tr-a{margin-top:6px;font-size:12px;line-height:1.45;color:rgba(255,255,255,.72);font-weight:500}
+  .tl-alt{margin:4px 0 7px;padding-top:9px;border-top:1px solid rgba(255,255,255,.06);
+    font-size:11.5px;line-height:1.45;color:rgba(255,255,255,.55);font-weight:500}
+  .tnote{margin-top:11px;font-size:11.5px;line-height:1.45;color:rgba(255,255,255,.55);font-weight:500}
+  .rule{margin-top:12px;font-size:10.5px;line-height:1.5;color:rgba(255,255,255,.38);font-weight:500}
+
 
   /* ── sections ── */
   .sech{font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.42);font-weight:800;margin:0 2px 9px;display:flex;align-items:center;justify-content:space-between}
@@ -133,12 +153,6 @@
   .dlt{font-size:10px;font-weight:800;letter-spacing:-.01em;margin-top:4px}
   .dlt.up{color:var(--good)} .dlt.down{color:var(--bad)} .dlt.flat{color:rgba(255,255,255,.3)}
 
-  /* signals shown outside the tier block, for buddies with no tier on show */
-  .work{background:var(--surf);border:1.5px solid rgba(255,255,255,.09);border-radius:16px;padding:16px;margin-bottom:16px}
-  .work .sigh{margin-bottom:12px}
-  .work .sigmore{border-top-color:rgba(255,255,255,.08)}
-  .worknote{margin-top:12px;padding-top:11px;border-top:1px solid rgba(255,255,255,.07);
-    font-size:11.5px;line-height:1.5;color:rgba(255,255,255,.45);font-weight:500}
 
   .ret{background:var(--surf);border:1.5px solid rgba(255,255,255,.09);border-radius:16px;padding:16px;width:100%;
     text-align:left;font-family:inherit;color:inherit;display:block;margin-top:9px}
@@ -149,51 +163,8 @@
   .ret-x{margin-top:13px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07);
     font-size:12px;line-height:1.5;color:rgba(255,255,255,.62);font-weight:500}
 
-  .focus{background:var(--surf);border:1.5px solid rgba(255,255,255,.09);border-radius:16px;padding:16px}
-  .focus-top{display:flex;align-items:center;gap:10px}
-  .focus-ic{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:900;
-    background:rgba(244,183,64,.18);color:var(--warn);flex-shrink:0}
-  .focus-ic.ok{background:rgba(79,199,154,.18);color:var(--good)}
-  .focus-t{font-size:15px;font-weight:800;letter-spacing:-.02em}
-  .focus-a{margin-top:9px;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.68);font-weight:500}
-  .focus-list{margin-top:10px}
-  .frow{display:flex;align-items:center;gap:9px;padding:7px 0}
-  .fic{width:18px;height:18px;border-radius:6px;display:grid;place-items:center;font-size:10px;font-weight:900;flex-shrink:0}
-  .fic.ok{background:rgba(79,199,154,.15);color:var(--good)}
-  .fic.warn{background:rgba(244,183,64,.15);color:var(--warn)}
-  .ft{font-size:13px;font-weight:600;color:rgba(255,255,255,.62)}
   .crsub{font-size:11px;color:rgba(255,255,255,.38);font-weight:600;margin:-4px 0 12px}
 
-  /* one-line "what to do about it" under each needs-work signal */
-  .sigadv{font-size:11px;line-height:1.4;color:rgba(255,255,255,.45);font-weight:500;
-    margin:2px 0 6px 27px}
-
-  .gate{display:flex;align-items:center;gap:9px;margin-top:12px;padding:10px 12px;
-    background:rgba(90,182,240,.07);border:1px solid rgba(90,182,240,.18);border-radius:12px}
-
-  /* Progress within the current tier band. Deliberately carries NO number and
-     no end labels — the bar is renormalised inside the band server-side, so it
-     shows movement without exposing where the next cutoff actually sits. */
-  .prog{margin-top:12px}
-  .prog-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-  .prog-l{font-size:10.5px;font-weight:700;color:rgba(255,255,255,.45)}
-  .prog-cap{margin-top:8px;font-size:11.5px;line-height:1.45;color:rgba(255,255,255,.55);font-weight:500}
-  .prog-track{height:8px;border-radius:4px;background:rgba(255,255,255,.08);overflow:hidden}
-  .prog-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#FF9E44,#FF7A2E)}
-
-  .pfoc{background:linear-gradient(160deg,rgba(255,158,68,.15),rgba(255,87,34,.04));
-    border:1.5px solid rgba(255,158,68,.28);border-radius:16px;padding:16px;margin-bottom:9px}
-  .pfoc-cap{font-size:10px;font-weight:800;letter-spacing:.08em;color:var(--btn);margin-bottom:7px}
-  .pfoc-h{font-size:15px;font-weight:700;letter-spacing:-.01em;line-height:1.45}
-
-  .alsorow{display:flex;gap:11px;align-items:flex-start;padding:10px 0;
-    border-bottom:1px solid rgba(255,255,255,.05)}
-  .alsorow:last-of-type{border-bottom:0}
-  .alsodot{width:6px;height:6px;border-radius:50%;background:var(--warn);flex-shrink:0;margin-top:6px}
-  .alsottl{font-size:12.5px;font-weight:800;color:rgba(255,255,255,.9)}
-  .alsotxt{font-size:12px;line-height:1.45;font-weight:500;color:rgba(255,255,255,.55);margin-top:2px}
-
-  .basefoot{margin-top:10px}
   .card.static{cursor:default}
 
   /* toggle sits INSIDE the card as a contained pill — the old full-width
@@ -241,7 +212,6 @@
   .qdetail{margin-top:11px;padding-top:12px;border-top:1px solid rgba(255,255,255,.07)}
   .qdetail .subt{font-size:11.5px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:9px}
 
-  .focus-h{font-size:13px;font-weight:800;color:rgba(255,255,255,.92);margin-bottom:4px}
 
   .legend{display:flex;align-items:center;gap:7px;font-size:10px;color:rgba(255,255,255,.3);margin-top:12px;font-weight:500}
   .legbox{width:13px;height:11px;border:1.5px dashed rgba(255,255,255,.2);border-radius:3px;flex-shrink:0}
@@ -323,17 +293,18 @@ document.getElementById('ldLogo').src = LOGO;
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const h1 = (n) => (n === null || n === undefined) ? '–' : Number(n).toFixed(1);
-const pct = (n) => (n === null || n === undefined) ? '–' : Math.round(Number(n)) + '%';
+// One decimal, as the server sends it. Rounding to whole numbers here would
+// turn 81.9% into "82%" next to an 82% target the expert hasn't met.
+const pct = (n) => (n === null || n === undefined) ? '–' : Number(n).toFixed(1).replace(/\.0$/, '') + '%';
 
 let DATA = null;
 let openPanel = null;
-let sigOpen = false;
 let retOpen = false;
 let CONFIG = { mobileLogin: true, urlLogin: false };
 let msgTimer = null;
 
 // ── Loading screen ────────────────────────────────────────────────────────────
-const LOAD_MSGS = ['Fetching your details', 'Pulling your last 7 days', 'Almost there'];
+const LOAD_MSGS = ['Fetching your details', 'Pulling this week\u2019s numbers', 'Almost there'];
 
 function showLoading() {
   $('login').classList.add('hide');
@@ -493,41 +464,6 @@ function deltaChip(d, goodDir) {
 }
 
 /**
- * Plain-language copy for every metric.
- *
- * The SQL titles ("DNP Rate", "Audio Contribution") are analyst language.
- * Wellness buddies read this on a phone between calls, so each metric gets a
- * name they'd actually use and ONE concrete action. The action matters more
- * than the label — a metric with no stated fix is just a scoreboard.
- */
-const METRIC_COPY = {
-  pickup_rate:        { title: 'Picking up calls',
-                        action: 'Answer more of the calls that come your way \u2014 every one you take is one you keep.' },
-  dnp_rate:           { title: 'Missed calls',
-                        action: 'Answer before the call stops ringing, or it goes to someone else.' },
-  rejection_rate:     { title: 'Declined calls',
-                        action: 'Decline fewer calls and more will start coming your way.' },
-  active_hours:       { title: 'Time online',
-                        action: 'Stay online through the busy hours so more calls reach you.' },
-  audio_active_hours: { title: 'Audio time online',
-                        action: 'Stay available for audio through the day \u2014 that\u2019s where the demand is.' },
-  talktime:           { title: 'Time on calls',
-                        action: 'Spend more total time on calls this week; it adds up fast.' },
-  avg_call_duration:  { title: 'Call length',
-                        action: 'Give each call a little more time so the conversation actually lands.' },
-  audio_contribution: { title: 'Audio calls',
-                        action: 'Take more audio calls \u2014 that\u2019s where most of the demand is.' },
-  short_calls:        { title: 'Very short calls',
-                        action: 'Be on a strong network and ready to talk the moment a call connects.' },
-  retention_3d:       { title: 'People calling back',
-                        action: 'End every call on a clear note so people come back to you.' },
-};
-
-function copyFor(sig) {
-  return METRIC_COPY[sig.metric] || { title: sig.title, action: '' };
-}
-
-/**
  * Colour anchored to the real expert-level percentile distribution
  * (n=7,468, Sep 2026) rather than to arbitrary round numbers:
  *
@@ -572,7 +508,7 @@ function donut(value) {
       stroke-dasharray="${dash.toFixed(1)} ${(c - dash).toFixed(1)}" stroke-linecap="round"
       transform="rotate(-90 60 60)"/>
     <text x="60" y="56" text-anchor="middle" dominant-baseline="middle" font-size="21" font-weight="800"
-      fill="#fff" font-family="Plus Jakarta Sans, sans-serif">${value == null ? '\u2013' : Math.round(v) + '%'}</text>
+      fill="#fff" font-family="Plus Jakarta Sans, sans-serif">${value == null ? '\u2013' : pct(v)}</text>
     <text x="60" y="73" text-anchor="middle" dominant-baseline="middle" font-size="8.5" font-weight="700"
       letter-spacing="0.4" fill="rgba(255,255,255,.42)"
       font-family="Plus Jakarta Sans, sans-serif">PICKED UP</text>
@@ -621,40 +557,52 @@ function greeting() {
 }
 
 /**
- * The journey bar. Replaces the old "7 more calls..." sentence.
+ * The tier section. Every word and number in it comes from the server — the
+ * headline, the targets, and whether each one is met — so the client can
+ * never show a target as passed that the pricing run would fail.
  *
- * Two things make this safe to show everyone, including Base:
- *  - The SQL renormalises progress INSIDE the current band, so the bar can't
- *    be used to recover where the real cutoffs sit.
- *  - Buddies below the volume gate get gate progress instead (calls/48),
- *    because that is their binding constraint. The label switches to match,
- *    so the bar never implies a tier they can't reach yet.
- *
- * Deliberately carries no number and no position in the pool. Most buddies
- * sit in Base by design; telling someone they are "top 75%" is accurate,
- * useless and demoralising. What moves behaviour is seeing the bar move.
+ * Unmet targets are listed first. Only the first one carries an action line:
+ * one clear next step beats a list of five.
  */
-function journeyBlock(et) {
-  if (!et.signalsReliable || et.tierProgress == null) return '';
-  const p = Math.max(0, Math.min(100, et.tierProgress));
-  const gateOpen = !et.volumeGate || et.volumeGate.met;
+function tierBlock(et, reset) {
+  const ladder = `<div class="ladder">${(et.ladder || []).map(s => `
+      <div class="seg${s.current ? ' cur' : ''}${s.onTrack ? ' next' : ''}" style="flex:1">
+        <span class="seglbl">${esc(s.name)}</span></div>`).join('')}
+  </div>`;
 
-  const label = !gateOpen ? 'Getting into the running'
-              : et.nextTier ? `On your way to ${esc(et.nextTier)}`
-              : 'You\u2019re at the top tier';
+  const cl = et.checklist;
+  let list = '';
+  if (cl) {
+    const rows = [...cl.checks].sort((a, b) => (a.met === false ? 0 : 1) - (b.met === false ? 0 : 1));
+    const firstMiss = rows.find(r => r.met === false);
+    list = `<div class="tl">
+      <div class="tl-h"><span>${esc(cl.title)}</span>${cl.met === true ? '<span class="tl-ok">All met</span>' : ''}</div>
+      ${rows.map(r => {
+        const state = r.met === true ? 'ok' : r.met === false ? 'miss' : 'todo';
+        return `<div class="tr ${state}">
+          <span class="tr-ic">${state === 'ok' ? '\u2713' : ''}</span>
+          <div class="tr-body">
+            <div class="tr-top"><span class="tr-l">${esc(r.label)}</span>
+              ${r.value != null ? `<span class="tr-v">${esc(r.value)}</span>` : ''}</div>
+            <div class="tr-t">Target: ${esc(r.target)}${r.gap ? ` <span class="tr-gap">\u00b7 ${esc(r.gap)}</span>` : ''}</div>
+            ${r === firstMiss && r.action ? `<div class="tr-a">${esc(r.action)}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('')}
+      ${cl.alt ? `<div class="tl-alt">Another way to reach ${esc(cl.tier)}: ${esc(cl.alt)}.</div>` : ''}
+    </div>`;
+  }
 
-  // Encouraging at every level, and it never states where they stand.
-  const caption = !gateOpen ? 'Keep taking calls this week to be in the running.'
-    : !et.nextTier ? 'Keep it steady to hold your spot.'
-    : p >= 90 ? 'You\u2019re almost there \u2014 keep it steady.'
-    : p >= 60 ? 'You\u2019re getting close. Keep it up.'
-    : p >= 25 ? 'You\u2019re on your way.'
-    : 'Every good call moves this along.';
-
-  return `<div class="prog">
-    <div class="prog-h"><span class="prog-l">${label}</span></div>
-    <div class="prog-track"><div class="prog-fill" style="width:${Math.max(p, 2)}%"></div></div>
-    <div class="prog-cap">${caption}</div>
+  return `<div class="hero">
+    <div class="hh"><span class="hprog">Your tier: ${esc(et.tier)}</span>
+      <span class="chip">${esc(resetText(reset))}</span></div>
+    <div class="tname">${esc(et.headline)}</div>
+    ${et.sub ? `<div class="tsub">${esc(et.sub)}</div>` : ''}
+    ${ladder}
+    ${et.notConfirmed ? `<div class="review">${esc(et.notConfirmedText)}</div>` : ''}
+    ${list}
+    ${et.early ? `<div class="tnote">It\u2019s early in the week, so these numbers will still move.</div>` : ''}
+    <div class="rule">${esc(et.ruleLine)}</div>
   </div>`;
 }
 
@@ -666,52 +614,6 @@ function render() {
   const et = d.earningTier;
   const labels = d.window.labels || [];
   const active = d.activity.hasActivity;
-
-  const ladder = `<div class="ladder">
-    ${et.segments.map(s => `<div class="seg${s.name === et.tier ? ' cur' : ''}" style="width:${s.w}%">
-        <span class="seglbl">${esc(s.label)}</span></div>`).join('')}
-  </div>`;
-
-  const allSig = et.signals || [];
-  const needsWork = allSig.filter(s => s.signal === 'needs_work');
-  const onTrack   = allSig.filter(s => s.signal !== 'needs_work');
-
-  // Today's focus — one primary lever, then the rest as smaller cards.
-  // Flat lists of nine equal-weight problems don't tell anyone where to
-  // start; a single headline with the payoff spelled out does.
-  const primary = needsWork[0];
-  const also    = needsWork.slice(1, 3);
-
-  const focusCard = !allSig.length ? '' : `
-    <div class="sech" style="margin-top:20px"><span>Today's focus</span></div>
-    ${primary ? `
-      <div class="pfoc">
-        <div class="pfoc-cap">${esc(copyFor(primary).title).toUpperCase()}</div>
-        <div class="pfoc-h">${esc(copyFor(primary).action)}</div>
-      </div>
-    ` : `
-      <div class="pfoc">
-        <div class="pfoc-cap" style="color:var(--good)">ALL GOOD</div>
-        <div class="pfoc-h">Nothing needs fixing right now \u2014 keep this up.</div>
-      </div>
-    `}
-    ${also.length || onTrack.length ? `<div class="card static">
-      ${also.length ? `${also.map((x) => `
-        <div class="alsorow">
-          <span class="alsodot"></span>
-          <div><div class="alsottl">${esc(copyFor(x).title)}</div>
-            <div class="alsotxt">${esc(copyFor(x).action)}</div></div>
-        </div>`).join('')}` : ''}
-      ${onTrack.length ? `
-        <button class="sigmore" onclick="toggleSig()">
-          <span class="sigt">${sigOpen ? 'Hide' : 'Show'} what's going well (${onTrack.length})</span>
-          <span class="caret">${sigOpen ? '\u25B2' : '\u25BC'}</span>
-        </button>
-        ${sigOpen ? `<div class="focus-list">${onTrack.map((x) => `
-          <div class="frow"><span class="fic ok">\u2713</span><span class="ft">${esc(copyFor(x).title)}</span></div>
-        `).join('')}</div>` : ''}
-      ` : ''}
-    </div>` : ''}`;
 
   // ── Your calls: donut left, the other two outcomes right beside it.
   //    Only the day-by-day breakdown hides behind the toggle. ────────────
@@ -824,38 +726,22 @@ function render() {
     </div>
 
     ${!active ? `<div class="offcard">
-      <div class="offt">No activity in the last 7 full days</div>
+      <div class="offt">No activity this week yet</div>
       <div class="offb">We don't have any calls or online time to show for ${esc(d.window.startLabel || '')} – ${esc(d.window.endLabel || '')}. If you've been online today, it'll appear here tomorrow.</div>
     </div>` : ''}
 
-    ${!et.showTier && active && journeyBlock(et) ? `<div class="hero">
-      <div class="hh"><span class="hprog">Your journey</span>
-        <span class="chip">${esc(resetText(d.reset))}</span></div>
-      ${journeyBlock(et)}
-      ${et.nudge ? `<div class="nudge">\u2192 ${esc(et.nudge)}</div>` : ''}
-    </div>` : ''}
-
-    ${et.showTier ? `<div class="hero">
-      <div class="hh"><span class="hprog">Earning Tier</span>
-        <span class="chip">${esc(resetText(d.reset))}</span></div>
-      <div class="trow">
-        <div class="tname">${esc(et.tier)}</div>
-      </div>
-      ${ladder}
-      ${journeyBlock(et)}
-      ${active && et.nudge ? `<div class="nudge">\u2192 ${esc(et.nudge)}</div>` : ''}
-    </div>` : ''}
+    ${tierBlock(et, d.reset)}
 
     ${active ? `
       <div class="fresh">
         <span class="fresh-ic">i</span>
-        <span class="fresh-t">Last 7 full days, up to <b>${esc(d.window.endLabel || '')}</b>. Today's calls and hours will show up here tomorrow.</span>
+        <span class="fresh-t">${d.window.isFinal
+          ? `Last week, <b>${esc(d.window.startLabel)} \u2013 ${esc(d.window.endLabel)}</b>: the numbers your tier was set on.`
+          : `This week so far, <b>${esc(d.window.startLabel)} \u2013 ${esc(d.window.endLabel)}</b>. Today\u2019s calls show up here tomorrow.`}</span>
       </div>
 
       <div class="sech"><span>Your calls</span><span class="hint">Tap any card for daily view</span></div>
       ${responseCard}
-
-      ${focusCard}
 
 
       <div class="sech" style="margin-top:20px"><span>Time online</span></div>
@@ -869,11 +755,6 @@ function render() {
 
 function toggle(key) {
   openPanel = openPanel === key ? null : key;
-  render();
-}
-
-function toggleSig() {
-  sigOpen = !sigOpen;
   render();
 }
 

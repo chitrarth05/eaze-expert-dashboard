@@ -91,17 +91,15 @@ async function fetchTierRows() {
   // the dashboard degrades silently — no error, every expert just shows as
   // Base with no tier and no progress bar. Fail loudly in the log instead.
   const REQUIRED = [
-    'payout_bucket', 'final_prank', 'language_pool_size',
-    'tier_progress_pct', 'calls_to_volume_gate', 'connected_calls_7d',
-    'pur_prank', 'acd_prank', 'tt_prank', 'short_call_prank',
+    'payout_bucket', 'metric_tier', 'quality_standing', 'range_end_ist', 'mobile_no',
   ];
   const missing = REQUIRED.filter((c) => !headers.includes(c));
   if (missing.length && !warnedMissing) {
     warnedMissing = true;
     console.error(
       `[sheet] "${SHEET_NAME}" is missing expected column(s): ${missing.join(', ')}. ` +
-      'The Apps Script export needs updating — until then tiers, the journey ' +
-      'bar and "your biggest lever" will not work correctly.'
+      'The Apps Script export needs updating — until then current tiers and the ' +
+      '"not confirmed in review" line will not work correctly.'
     );
   }
 

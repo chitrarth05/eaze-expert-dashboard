@@ -2,10 +2,11 @@
  * redash.js — pulls both source queries and caches them in memory.
  *
  * Two queries feed this dashboard:
- *   1. METRICS  — one row per expert: response split, hours, quality, the
- *                 within-language signals, and the reset clock.
- *   2. TIERS    — the Variable Pricing ranking output (already on a schedule).
- *                 We only read the tier from it; nothing is recomputed here.
+ *   1. METRICS  — one row per expert: this tier week's response split, hours,
+ *                 quality, the pass/fail of every tier target, and the reset
+ *                 clock.
+ *   2. TIERS    — the Variable Pricing output (Google Sheet, see
+ *                 google-sheet.js). We only read the paid tier from it.
  *
  * They are joined on mobile_10 (last 10 digits). Both queries emit that column
  * because raw mobile_no formatting is inconsistent (+91, spaces, leading zero)
@@ -110,7 +111,7 @@ function parseJsonArray(value) {
 /**
  * Normalised metrics rows, memoised against the raw cached array.
  *
- * This used to re-map and re-JSON.parse `daily` and `signals` for EVERY row on
+ * This used to re-map and re-JSON.parse `daily` and `tier_targets` for EVERY row on
  * every request — measured at ~69ms per request against 5k experts, and it
  * also handed back a fresh array each time, which defeated the lookup-index
  * memo below. Parsing once per cache refresh makes the per-request path a
@@ -125,7 +126,7 @@ export async function getMetricsRows() {
   const rows = raw.map((row) => ({
     ...row,
     daily: parseJsonArray(row.daily),
-    signals: parseJsonArray(row.signals),
+    tier_targets: parseJsonArray(row.tier_targets),
   }));
 
   normalized = { raw, rows };
