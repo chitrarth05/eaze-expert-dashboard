@@ -1,29 +1,120 @@
 /**
- * dashboard-service.js — joins the two Redash queries into the payload the
- * webview renders.
+ * dashboard-service.js — joins the metrics query (Redash) and the Variable
+ * Pricing sheet into the payload the webview renders.
  *
- * Nothing is scored here. Tier comes from the Variable Pricing query; every
- * other number and the directional signals come from the metrics query. This
- * layer only reshapes and applies presentation rules.
+ * Nothing is scored here. The paid tier comes from the pricing sheet. The
+ * week's numbers and the pass/fail of every tier target come from the
+ * metrics query, which carries the same `tier_gates` block as the pricing
+ * query. This layer picks what to show and writes the copy.
+ *
+ * ── DISCLOSURE BOUNDARY (read before changing anything below) ──────────────
+ *
+ *   1. PUBLISHABLE — the tier targets. They are fixed numbers, identical in
+ *      the pricing query and the metrics query (the `tier_gates` block), so
+ *      stating them exactly is a promise the system keeps.
+ *
+ *   2. NEVER LEAVES THE SERVER — quality_standing, metric_tier, the excluded
+ *      list, multipliers. None of these are copied into the payload.
+ *
+ *      The only visible trace of a review outcome is `notConfirmed`: one
+ *      neutral line shown when last week's numbers earned a higher tier than
+ *      the one confirmed. It never says why, and the same rule line is shown
+ *      to every expert, so it reads as a published rule being applied rather
+ *      than as an accusation.
+ *
+ * ── WEEK ─────────────────────────────────────────────────────────────────
+ * The tier week is Monday–Sunday IST. Tuesday to Sunday the metrics query
+ * returns this week so far; on Monday it returns last week, finished, which
+ * is exactly what the 05:00 pricing run used.
  */
 
 import {
   getMetricsByMobile,
-  normalizeMobile
+  getMetricsByUserId,
+  normalizeMobile,
+  normalizeId
 } from "./redash.js";
 
 import {
-  getTierByMobile
+  getTierByMobile,
+  getTierById
 } from "./google-sheet.js";
 
-const TIER_LADDER = [
-  { name: 'Diamond', label: 'Diamond', maxTop: 10 },
-  { name: 'Gold',    label: 'Gold',    maxTop: 25 },
-  { name: 'Silver',  label: 'Silver',  maxTop: 40 },
-  { name: 'Base',    label: 'Base',    maxTop: 100 },
-];
+/** Shown to every expert, every time. The rule, never a personal verdict. */
+const RULE_LINE =
+  'Tiers are set every Monday from the past week\u2019s numbers and confirmed in a ' +
+  'weekly review, which also checks that calls follow eaze guidelines.';
 
-/** Resolve a mobile to an expert row. Returns null if they aren't in the pool. */
+const NOT_CONFIRMED_LINE =
+  'Your numbers last week met the targets, but this week\u2019s tier wasn\u2019t ' +
+  'confirmed in the weekly review.';
+
+/**
+ * The three tier targets, in the order they're shown. Call length (ACD,
+ * short calls) is not a target and is never shown to experts.
+ */
+const GATES = ['calls', 'pickup', 'talktime'];
+
+/** Plain names for each target, as an expert would say them. */
+const CHECK_LABELS = {
+  calls:    'Calls taken',
+  pickup:   'Pickup rate',
+  talktime: 'Time on calls',
+};
+
+/** One concrete thing to do about each target. */
+const CHECK_ACTIONS = {
+  calls:    'Stay online through busy hours so more calls reach you.',
+  pickup:   'Answer the calls that come to you instead of letting them ring out or declining.',
+  talktime: 'Stay online longer, especially in busy hours, so you spend more time on calls across the week.',
+};
+
+// ── Small helpers ────────────────────────────────────────────────────────────
+
+function numOrNull(v) {
+  if (v === null || v === undefined || v === '') return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+function truthy(v) {
+  return v === true || v === 'true' || v === 'TRUE' || v === 1 || v === '1';
+}
+
+/** Round toward "not passed", matching the SQL display rule. */
+const floor1 = (v) => Math.floor(v * 10 + 1e-9) / 10;
+const ceil1  = (v) => Math.ceil(v * 10 - 1e-9) / 10;
+
+/** 82 → "82", 4.5 → "4.5". */
+function trim(n) {
+  return Number(n).toFixed(1).replace(/\.0$/, '');
+}
+
+function plural(n, word) {
+  return `${n} ${word}${n === 1 ? '' : 's'}`;
+}
+
+function shortDate(iso) {
+  if (!iso) return '';
+  const d = new Date(`${String(iso).slice(0, 10)}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return String(iso).slice(0, 10);
+  return `${d.getUTCDate()} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()]}`;
+}
+
+function parseArray(value) {
+  if (Array.isArray(value)) return value;
+  if (!value || typeof value !== 'string') return [];
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+// ── Lookups ──────────────────────────────────────────────────────────────────
+
+/** Resolve a mobile to a metrics row. Null if they aren't in the pool. */
 export async function lookupExpert(mobileNumber) {
   const key = normalizeMobile(mobileNumber);
   if (key.length !== 10) return null;
@@ -31,52 +122,233 @@ export async function lookupExpert(mobileNumber) {
   return metrics.get(key) || null;
 }
 
-/**
- * Marker position on the tier ladder.
- *
- * Segment widths are floored at a minimum so the longest label still fits,
- * then the expert's percentile is mapped through that same distorted scale.
- * Without the second step the marker drifts out of its own tier.
- */
-function ladderGeometry(topPercent) {
-  const MIN_W = 21;
-  const asc = [...TIER_LADDER].sort((a, b) => a.maxTop - b.maxTop);
-  let lo = 0;
-  const bounds = asc.map((t) => { const s = { ...t, lo, hi: t.maxTop }; lo = t.maxTop; return s; });
-  let widths = bounds.map((s) => Math.max(s.hi - s.lo, MIN_W));
-  const sum = widths.reduce((a, b) => a + b, 0);
-  widths = widths.map((w) => (w / sum) * 100);
-
-  const segs = bounds.map((s, i) => ({ ...s, w: widths[i] })).reverse(); // best on the right
-
-  let markerPos = 0, acc = 0;
-  if (topPercent != null) {
-    for (const s of segs) {
-      if (topPercent <= s.hi && topPercent > s.lo) {
-        markerPos = acc + ((s.hi - topPercent) / Math.max(s.hi - s.lo, 1)) * s.w;
-        break;
-      }
-      acc += s.w;
-    }
-  }
-  return { segments: segs.map((s) => ({ name: s.name, label: s.label, w: Number(s.w.toFixed(3)) })), markerPos: Number(markerPos.toFixed(3)) };
+/** Resolve an expert_user_id to a metrics row. Null if not found. */
+export async function lookupExpertByUserId(userId) {
+  const key = normalizeId(userId);
+  if (!key) return null;
+  const metrics = await getMetricsByUserId();
+  return metrics.get(key) || null;
 }
+
+/**
+ * Pricing-sheet row for a metrics row. mobile_10 first, ids as fallback, so
+ * tier resolution never depends on how the expert signed in.
+ */
+async function resolveTier(m) {
+  const byMobile = await getTierByMobile(normalizeMobile(m.mobile_10 || m.mobile_no));
+  if (byMobile) return byMobile;
+  return (await getTierById(m.expert_user_id))
+      || (await getTierById(m.expert_profile_id))
+      || undefined;
+}
+
+// ── Tier targets ─────────────────────────────────────────────────────────────
+
+/**
+ * Tier names in rank order, from the gates the query returned. Base is rank 0
+ * and has no gates, so it's added here.
+ */
+function ladderFrom(targets) {
+  const byRank = new Map([[0, 'Base']]);
+  for (const r of targets) {
+    const rank = numOrNull(r.tier_rank);
+    if (rank !== null && !byRank.has(rank)) byRank.set(rank, r.tier_name);
+  }
+  return [...byRank.entries()].sort((a, b) => a[0] - b[0]).map(([rank, name]) => ({ rank, name }));
+}
+
+/** Which targets a tier actually uses. A zero target means "not used". */
+function activeGates(r) {
+  const min = {
+    calls:    numOrNull(r.min_connected_calls),
+    pickup:   numOrNull(r.min_pur_pct),
+    talktime: numOrNull(r.min_talktime_mins),
+  };
+  return GATES.filter((k) => min[k] > 0);
+}
+
+const PASS_FIELD = { calls: 'pass_calls', pickup: 'pass_pur', talktime: 'pass_talktime' };
+
+/**
+ * One row per target: what it is, where the expert stands, and how far is
+ * left. Pass/fail always comes from the query, which checked the unrounded
+ * value; the numbers here are only for display and are rounded toward "not
+ * passed" so the two can never visibly disagree.
+ */
+function buildChecks(r, m, { withValues, daysLeft }) {
+  const calls = numOrNull(m.connected_calls) ?? 0;
+  const pur   = numOrNull(m.gate_pur_pct);
+  const talk  = numOrNull(m.gate_talktime_mins) ?? 0;
+
+  const pace = (text) => (daysLeft > 0 ? `${text} \u00b7 ${plural(daysLeft, 'day')} left` : text);
+
+  return activeGates(r).map((key) => {
+    const met = withValues ? truthy(r[PASS_FIELD[key]]) : null;
+    const row = { key, label: CHECK_LABELS[key], met, value: null, target: '', gap: null, action: null };
+
+    if (key === 'calls') {
+      const t = numOrNull(r.min_connected_calls);
+      row.target = `${t} or more`;
+      if (withValues) {
+        row.value = `${calls}`;
+        if (!met) row.gap = pace(`${t - calls} more to go`);
+      }
+    } else if (key === 'pickup') {
+      const t = numOrNull(r.min_pur_pct);
+      row.target = `${trim(t)}% or more`;
+      if (withValues) {
+        row.value = pur === null ? '\u2013' : `${trim(floor1(pur))}%`;
+        if (!met) row.gap = `${trim(Math.max(0.1, ceil1(t - (pur ?? 0))))} points to go`;
+      }
+    } else if (key === 'talktime') {
+      const t = numOrNull(r.min_talktime_mins);
+      row.target = `${Math.round(t)} min or more this week`;
+      if (withValues) {
+        row.value = `${Math.floor(talk)} min`;
+        if (!met) row.gap = pace(`${Math.max(1, Math.ceil(t - talk))} min to go`);
+      }
+    }
+
+    if (withValues && !met) row.action = CHECK_ACTIONS[key];
+    return row;
+  });
+}
+
+/** The checklist for one tier. One set of targets per tier, no routes. */
+function checklistFor(rank, targets, m, ladder, opts) {
+  const r = targets.find((x) => numOrNull(x.tier_rank) === rank);
+  if (!r) return null;
+  const name = ladder.find((t) => t.rank === rank)?.name || r.tier_name;
+
+  return {
+    tier: name,
+    title: opts.title(name),
+    met: opts.withValues ? truthy(r.passes) : null,
+    checks: buildChecks(r, m, opts),
+    alt: null,
+  };
+}
+
+/**
+ * The tier section.
+ *
+ * Wording rule: never "you will be X". Every forward-looking line says "on
+ * track", because the review at reset can still decide otherwise.
+ */
+function buildEarningTier(m, t) {
+  const targets = parseArray(m.tier_targets);
+  const ladder  = ladderFrom(targets);
+  const rankOf  = (name) => ladder.find((x) => x.name === name)?.rank ?? 0;
+  const topRank = ladder[ladder.length - 1]?.rank ?? 0;
+
+  const current     = t?.payout_bucket || 'Base';
+  const currentRank = rankOf(current);
+  const weekRank    = numOrNull(m.week_tier_rank) ?? 0;
+  const weekName    = ladder.find((x) => x.rank === weekRank)?.name || 'Base';
+
+  const isFinal  = truthy(m.is_week_final);
+  const daysLeft = numOrNull(m.days_left_in_week) ?? 0;
+  const elapsed  = numOrNull(m.window_days) ?? 0;
+
+  // Monday before the 05:00 run has written the new week to the sheet.
+  const sheetWeekEnd = String(t?.range_end_ist || '').slice(0, 10);
+  const weekEnd      = String(m.week_end_ist || '').slice(0, 10);
+  const tierPending  = isFinal && Boolean(sheetWeekEnd) && sheetWeekEnd < weekEnd;
+
+  // Numbers earned a higher tier than the one confirmed. See the boundary
+  // note up top: this flag is the ONLY thing derived from the review columns.
+  const notConfirmed = !tierPending
+    && t?.quality_standing === 'Under review'
+    && rankOf(t?.metric_tier) > currentRank;
+
+  let status, headline, sub, checklist = null;
+
+  if (isFinal) {
+    // Monday: last week is closed. Nothing to track yet; show the targets.
+    if (tierPending) {
+      status = 'pending';
+      headline = 'Last week is done';
+      sub = 'Your tier for this week updates by 5am today.';
+    } else {
+      status = 'new_week';
+      headline = current;
+      sub = 'Your tier for this week. This week\u2019s numbers start showing tomorrow.';
+      const aim = Math.min(currentRank + 1, topRank);
+      if (aim > 0) {
+        checklist = checklistFor(aim, targets, m, ladder, {
+          withValues: false, daysLeft: 0,
+          title: (n) => (aim === currentRank ? `Keep ${n} next week` : `Reach ${n} next week`),
+        });
+      }
+    }
+  } else if (currentRank > 0 && weekRank < currentRank) {
+    status = 'at_risk';
+    headline = `Keep ${current}`;
+    sub = `You\u2019re below your ${current} targets this week. Get these back by Sunday to keep it.`;
+    checklist = checklistFor(currentRank, targets, m, ladder, {
+      withValues: true, daysLeft, title: (n) => `To keep ${n}`,
+    });
+  } else if (weekRank > currentRank) {
+    status = 'on_track_up';
+    headline = `On track for ${weekName}`;
+    sub = weekRank === topRank
+      ? 'That\u2019s the top tier. Keep this up through Sunday.'
+      : 'Keep this up through Sunday to move up next week.';
+    if (weekRank < topRank) {
+      checklist = checklistFor(weekRank + 1, targets, m, ladder, {
+        withValues: true, daysLeft, title: (n) => `To reach ${n}`,
+      });
+    }
+  } else if (currentRank === topRank && currentRank > 0) {
+    status = 'holding_top';
+    headline = `Holding ${current}`;
+    sub = 'You\u2019re meeting the top tier\u2019s targets. Keep it steady through Sunday.';
+  } else if (currentRank > 0) {
+    status = 'holding';
+    headline = `Holding ${current}`;
+    sub = `You\u2019re meeting your ${current} targets this week.`;
+    checklist = checklistFor(currentRank + 1, targets, m, ladder, {
+      withValues: true, daysLeft, title: (n) => `To reach ${n}`,
+    });
+  } else {
+    status = 'climbing';
+    const next = ladder.find((x) => x.rank === 1)?.name || 'Silver';
+    headline = `Reach ${next}`;
+    sub = 'Hit all of these by Sunday to move up next week.';
+    checklist = checklistFor(1, targets, m, ladder, {
+      withValues: true, daysLeft, title: (n) => `To reach ${n}`,
+    });
+  }
+
+  return {
+    tier: current,
+    status,
+    headline,
+    sub,
+    early: !isFinal && elapsed > 0 && elapsed <= 2,
+    ladder: ladder.map((x) => ({
+      name: x.name,
+      current: x.rank === currentRank,
+      // Only marks a move UP. A drop is handled by the "Keep X" headline.
+      onTrack: !isFinal && x.rank === weekRank && weekRank > currentRank,
+    })),
+    checklist,
+    notConfirmed,
+    notConfirmedText: notConfirmed ? NOT_CONFIRMED_LINE : null,
+    ruleLine: RULE_LINE,
+    daysLeft,
+    isFinal,
+  };
+}
+
+// ── Reset clock ──────────────────────────────────────────────────────────────
 
 const IST_OFFSET = '+05:30';
 const WEEK_MS    = 7 * 24 * 60 * 60 * 1000;
 
 /**
- * Countdown to the weekly tier reset, derived at REQUEST time.
- *
- * The query also ships hours_to_reset / days_to_reset, but those are frozen at
- * query-execution time. Redash refreshes on a schedule (daily), so trusting
- * them would mean the countdown only moves once a day — and the "< 24 hours"
- * branch would show an hour figure that is up to a day out of date, sometimes
- * counting down to a reset that has already happened.
- *
- * next_reset_ist is an absolute instant, so it survives caching. We only have
- * to roll it forward if the result was cached from before the last reset,
- * which makes this self-correcting no matter how stale the query result is.
+ * Countdown to the Monday 05:00 IST reset, derived at REQUEST time so it
+ * keeps moving between daily Redash refreshes.
  */
 function resetClock(nextResetIst) {
   const empty = { nextResetAt: null, hoursToReset: null, daysToReset: null };
@@ -97,103 +369,48 @@ function resetClock(nextResetIst) {
   };
 }
 
-const SIGNAL_TITLES = {
-  pickup_rate:        'Pickup Rate',
-  dnp_rate:           'Missed Calls',
-  rejection_rate:     'Rejected Calls',
-  active_hours:       'Active Hours',
-  audio_active_hours: 'Audio Active Hours',
-  talktime:           'Talktime',
-  avg_call_duration:  'Avg Call Duration',
-  audio_contribution: 'Audio Talktime',
-  short_calls:        'Calls Under 10s',
-};
+// ── Day-wise series ──────────────────────────────────────────────────────────
 
-function nudgeFor(tier) {
-  switch (tier) {
-    case 'Diamond': return null;
-    case 'Gold':    return 'Push to Diamond — you\u2019re closer than you think.';
-    case 'Silver':  return 'Gold is within reach. Keep your consistency up.';
-    default:        return 'Keep your numbers steady to move up a tier.';
-  }
-}
-
-/** Pull the day-wise series out of the BigQuery ARRAY<STRUCT> column. */
 function normalizeDaily(daily) {
-  if (!Array.isArray(daily)) return [];
-  return daily.map((d) => ({
+  return parseArray(daily).map((d) => ({
     day: d.day_ist,
-    wasActive: d.was_active === true || d.was_active === 'true',
+    wasActive: truthy(d.was_active),
     pickupPct: numOrNull(d.pickup_pct),
     rejectedPct: numOrNull(d.rejected_pct),
     dnpPct: numOrNull(d.dnp_pct),
     activeHours: numOrNull(d.active_hours),
     audioActiveHours: numOrNull(d.audio_active_hours),
-    avgCallDurationMins: numOrNull(d.avg_call_duration_mins),
     audioContributionPct: numOrNull(d.audio_contribution_pct),
-    shortCallPct: numOrNull(d.short_call_pct),
   }));
 }
 
-function numOrNull(v) {
-  if (v === null || v === undefined || v === '') return null;
-  const n = Number(v);
-  return Number.isFinite(n) ? n : null;
+/** Signed change between two rates. Null unless both sides exist. */
+function delta(cur, prev) {
+  const a = numOrNull(cur), b = numOrNull(prev);
+  if (a === null || b === null) return null;
+  return Math.round((a - b) * 10) / 10;
 }
 
-function shortDate(iso) {
-  if (!iso) return '';
-  const d = new Date(`${String(iso).slice(0, 10)}T00:00:00Z`);
-  if (Number.isNaN(d.getTime())) return String(iso).slice(0, 10);
-  return `${d.getUTCDate()} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()]}`;
-}
+// ── Payload ──────────────────────────────────────────────────────────────────
 
-/** Build the full payload the webview renders. */
-export async function buildDashboard(mobileNumber) {
-  const key = normalizeMobile(mobileNumber);
-const metricsMap = await getMetricsByMobile();
-const t = await getTierByMobile(key);
+/**
+ * Build the full payload the webview renders.
+ *
+ * `identity` is { type: 'mobile' | 'user_id', value }. Both entry paths land
+ * on the same metrics row.
+ */
+export async function buildDashboard(identity) {
+  const m = identity?.type === 'user_id'
+    ? await lookupExpertByUserId(identity.value)
+    : await lookupExpert(identity?.value);
 
-  const m = metricsMap.get(key);
   if (!m) return null;
 
-  // Not in the VP output => excluded from the eligibility pool or below the
-  // cohort floor. Show Base rather than an error, and never say why.
-  const tier = t?.payout_bucket || 'Base';
-const topPercent = null;
-const { segments } = ladderGeometry(topPercent);
-
-const tierCenters = {
-  Base: 24.4,
-  Silver: 57.3,
-  Gold: 74.4,
-  Diamond: 91.5,
-};
-
-const markerPos = tierCenters[tier] ?? 24.4;
-
+  const t = await resolveTier(m);
   const daily = normalizeDaily(m.daily);
   const labels = daily.map((d) => shortDate(d.day));
-
-  const hasActivity = m.has_activity_7d === true || m.has_activity_7d === 'true' || Number(m.active_days_7d) > 0;
-
-  // Signals arrive worst-first from SQL. Only surface "needs work" text; the
-  // rest render as a quiet check. Suppressed when the language pool is too
-  // thin for a percentile to mean anything.
-  const signalsReliable = m.signals_reliable === true || m.signals_reliable === 'true';
-  const signals = Array.isArray(m.signals)
-  ? m.signals.map((s) => ({
-      metric: s.metric,
-      // Display copy lives here, not in SQL. The query still ships a `title`,
-      // but keying off `metric` means a wording change is a deploy, not a
-      // Redash edit — and a stale query can't put old copy on screen.
-      title: SIGNAL_TITLES[s.metric] || s.title,
-      signal: s.signal,
-      label: s.label
-    }))
-  : [];
-
-  const reset = resetClock(m.next_reset_ist);
+  const hasActivity = truthy(m.has_activity_week) || Number(m.active_days_week) > 0;
+  const isFinal = truthy(m.is_week_final);
 
   return {
     expert: {
@@ -203,39 +420,37 @@ const markerPos = tierCenters[tier] ?? 24.4;
       onboardedDate: m.onboarded_date_ist,
     },
     window: {
-      // The window is 7 COMPLETE days ending yesterday — today is excluded on
-      // purpose, so the UI has to say so or the expert will read a missing
-      // day as lost work.
+      // Mon–Sun tier week. Tue–Sun: this week so far. Monday: last week, done.
       start: m.window_start_ist,
       end: m.window_end_ist,
+      weekEnd: m.week_end_ist,
       days: numOrNull(m.window_days),
+      isFinal,
       startLabel: shortDate(m.window_start_ist),
       endLabel: shortDate(m.window_end_ist),
-      dataThrough: m.data_through_ist || m.window_end_ist,
+      weekEndLabel: shortDate(m.week_end_ist),
       dataThroughLabel: shortDate(m.data_through_ist || m.window_end_ist),
-      pendingDayLabel: shortDate(m.pending_day_ist),
       labels,
     },
-    reset,
-    earningTier: {
-      tier,
-      ranked: Boolean(t),
-      topPercent,
-      segments,
-      markerPos,
-      nudge: nudgeFor(tier),
-      signals,
-      signalsReliable,
+    reset: resetClock(m.next_reset_ist),
+    earningTier: buildEarningTier(m, t),
+    retention: {
+      pct: numOrNull(m.retention_3d_pct),
+      cohort: numOrNull(m.retention_cohort_size) ?? 0,
     },
     activity: {
       hasActivity,
-      activeDays: numOrNull(m.active_days_7d) ?? 0,
+      activeDays: numOrNull(m.active_days_week) ?? 0,
     },
     callResponse: {
       requests: numOrNull(m.response_requests) ?? 0,
       pickupPct: numOrNull(m.pickup_pct),
       rejectedPct: numOrNull(m.rejected_pct),
       dnpPct: numOrNull(m.dnp_pct),
+      // Against last full week. NULL when last week was too thin to compare.
+      pickupDelta: delta(m.pickup_pct, m.pickup_pct_prev),
+      rejectedDelta: delta(m.rejected_pct, m.rejected_pct_prev),
+      dnpDelta: delta(m.dnp_pct, m.dnp_pct_prev),
       daily: {
         pickup: daily.map((d) => d.pickupPct),
         rejected: daily.map((d) => d.rejectedPct),
@@ -251,21 +466,13 @@ const markerPos = tierCenters[tier] ?? 24.4;
     },
     callQuality: {
       finishedCalls: numOrNull(m.finished_calls) ?? 0,
+      // Nothing about call length (average duration, short calls) is ever
+      // shown to experts.
       subMetrics: [
-        {
-          key: 'avg_call_duration', title: 'Avg Call Duration', unit: 'm',
-          directionGood: 'higher', value: numOrNull(m.avg_call_duration_mins),
-          values: daily.map((d) => d.avgCallDurationMins),
-        },
         {
           key: 'audio_contribution', title: 'Audio Talktime', unit: '%',
           directionGood: 'higher', value: numOrNull(m.audio_contribution_pct),
           values: daily.map((d) => d.audioContributionPct),
-        },
-        {
-          key: 'short_calls', title: 'Calls under 10s', unit: '%',
-          directionGood: 'lower', value: numOrNull(m.short_call_pct),
-          values: daily.map((d) => d.shortCallPct),
         },
       ],
     },
