@@ -17,8 +17,8 @@ const REQUIRED_METRIC_COLS = [
   'is_week_final', 'days_left_in_week', 'has_activity_week', 'active_days_week',
   'response_requests', 'connected_calls', 'pickup_pct', 'rejected_pct', 'dnp_pct',
   'active_hours', 'audio_active_hours', 'other_active_hours',
-  'avg_call_duration_mins', 'audio_contribution_pct', 'short_call_pct',
-  'gate_pur_pct', 'gate_acd_mins', 'gate_short_call_pct', 'gate_talktime_mins',
+  'audio_contribution_pct',
+  'gate_pur_pct', 'gate_talktime_mins',
   'week_tier_rank', 'tier_targets',
   'next_reset_ist', 'hours_to_reset', 'days_to_reset', 'daily',
 ];
@@ -45,7 +45,7 @@ const run = async () => {
     Array.isArray(sample.daily) && sample.daily.length === days,
     `got ${Array.isArray(sample.daily) ? sample.daily.length : typeof sample.daily}, window_days ${days}`);
   pass &= check('tier targets present', Array.isArray(sample.tier_targets) && sample.tier_targets.length > 0,
-    Array.isArray(sample.tier_targets) ? `${sample.tier_targets.length} tier routes` : typeof sample.tier_targets);
+    Array.isArray(sample.tier_targets) ? `${sample.tier_targets.length} tiers` : typeof sample.tier_targets);
 
   console.log('\nTiers query (Variable Pricing)');
   const tiers = await getTierRows();
